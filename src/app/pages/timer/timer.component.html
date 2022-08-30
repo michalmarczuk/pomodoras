@@ -1,0 +1,73 @@
+<section>
+    <div class="container">
+        <div class="row d-flex justify-content-center align-items-center h-250">
+            <div class="col-12 col-xl-10">
+                <div class="card border-0">
+                    <div class="container">
+                        <div class="row">
+
+                            <!-- Add drag and drop: https://www.youtube.com/watch?v=O489gFEoj-o -->
+                            <div class="col-sm">
+                                <div class="p-5 text-end">
+                                    <img height="75px" width="75px" src="assets/pomodoras_logo_transparent.png">
+                                    <img height="75px" width="75px" src="assets/pomodoras_logo_transparent.png">
+                                    <img height="75px" width="75px" src="assets/pomodoras_logo_transparent.png">
+                                    <img height="75px" width="75px" src="assets/pomodoras_logo_transparent.png">
+                                    <img height="75px" width="75px" src="assets/pomodoras_logo_transparent.png">
+                                    <img height="75px" width="75px" src="assets/pomodoras_logo_transparent.png">
+                                </div>
+                            </div>
+
+                            <div class="col-sm">
+                                <div class="p-5 text-center">
+                                    <div>
+                                        <div class="base-timer">
+                                            <svg class="base-timer__svg" viewBox="0 0 100 100"
+                                                xmlns="http://www.w3.org/2000/svg">
+                                                <g class="base-timer__circle">
+                                                    <circle class="base-timer__path-elapsed" cx="50" cy="50" r="45">
+                                                    </circle>
+                                                    <path id="base-timer-path-remaining"
+                                                        [attr.stroke-dasharray]="circleCurrent + ' ' + circleMax"
+                                                        class="base-timer__path-remaining green" d="
+                                                    M 50, 50
+                                                    m -45, 0
+                                                    a 45,45 0 1,0 90,0
+                                                    a 45,45 0 1,0 -90,0
+                                                  "></path>
+                                                </g>
+                                            </svg>
+                                            <span id="base-timer-label" class="base-timer__label">{{ timerCurrent
+                                                }}</span>
+                                        </div>
+
+                                        <p>
+                                            <button (click)="onClickStartPausePomodoroTimer()">
+                                                <img src="{{ counting ? 'assets/pause.png' : 'assets/play.png' }}"
+                                                    width="50">
+                                            </button>
+                                            <button (click)="onClickStopPomodoroTimer()"><img src="assets/stop.png"
+                                                    width="50"></button>
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-sm">
+                                <div class="p-5 text-start">
+                                    <img height="75px" width="75px" src="assets/pomodoras_logo_transparent.png">
+                                    <img height="75px" width="75px" src="assets/pomodoras_logo_transparent.png">
+                                    <img height="75px" width="75px" src="assets/pomodoras_logo_transparent.png">
+                                    <img height="75px" width="75px" src="assets/pomodoras_logo_transparent.png">
+                                    <img height="75px" width="75px" src="assets/pomodoras_logo_transparent.png">
+                                    <img height="75px" width="75px" src="assets/pomodoras_logo_transparent.png">
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>

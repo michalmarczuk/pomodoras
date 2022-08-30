@@ -1,1 +1,25 @@
 /* You can add global styles to this file, and also import other style files */
+
+body { 
+    /* background-color: #808080 !important;  */
+    /* background-color: #2C0505 !important;  */
+    background-color: #F8F9FA !important; 
+}
+
+.btn-primary, .btn-primary:visited, .btn-primary:active {
+        background-color: #E64D4D !important;
+        border-color: #CD3434 !important;
+}
+
+.btn-primary:hover {
+    background-color: #CD3434 !important;
+    border-color: #CD3434 !important;
+}
+
+img.circleImage {
+    border-top: 5px solid black;
+    border-radius: 50%;
+    width: 180px;
+    margin-top:-100px;
+    margin-bottom: 20px;
+}

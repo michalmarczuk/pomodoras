@@ -1,0 +1,26 @@
+<nav *ngIf="isAuthenticated" class="navbar navbar-expand-lg navbar-light bg-light menu">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-2">
+                <img src="assets/pomodoras_logo_transparent.png">
+            </div>
+            <div class="col-2">
+                <div class="pomodoras-text">Pomodoras</div>
+            </div>
+        </div>
+        <div class="navbar-nav">
+            <a href="timer" routerLink="timer" routerLinkActive="active" class="nav-item nav-link">Timer</a>
+            <a href="reports" routerLink="reports" routerLinkActive="active" class="nav-item nav-link">Reports</a>
+            <a href="settings" routerLink="settings" routerLinkActive="active" class="nav-item nav-link">Settings</a>
+        </div>
+        <div class="navbar-nav">
+            <button class="btn btn-primary btn-lg btn-block logoutButton"
+                (click)="onClickLogoutButton()">Wyloguj</button>
+        </div>
+    </div>
+</nav>
+<div *ngIf="isAuthenticated" class="menu-icons d-flex justify-content-center">
+    <img src="assets/timer.png" routerLink="timer" routerLinkActive="menu-icon-active" class="menu-icon">
+    <img src="assets/reports.png" routerLink="reports" routerLinkActive="menu-icon-active" class="menu-icon menu-icon-disabled">
+    <img src="assets/settings.png" routerLink="settings" routerLinkActive="menu-icon-active" class="menu-icon menu-icon-disabled">
+</div>

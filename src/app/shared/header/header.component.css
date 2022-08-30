@@ -1,0 +1,53 @@
+img {
+    height: 60px;
+    width: 60px;
+}
+
+div.pomodoras-text {
+    font-family: 'Amatic SC', cursive;
+    font-family: 'Indie Flower', cursive;
+    font-size: 40px;
+    padding-left: 11px;
+    padding-top: 8px;
+}
+
+button.logoutButton {
+    margin-left: 160px;
+}
+
+nav.menu {
+    background-color: #FFF !important;
+    z-index: 1;
+}
+
+.nav-item {
+    font-size: larger;
+    margin: 0 15px 0 15px;
+    width: 80px;
+}
+
+div.menu-icons {
+    margin-top: -30px;
+    margin-left: 18px;
+    padding-bottom: 25px;
+}
+
+img.menu-icon {
+    cursor: pointer;
+    border-top: none;
+    border-radius: 50%;
+    width: 65px;
+    height: 65px;
+    margin: 0 25px 0 25px;
+    box-shadow: rgba(0, 0, 0, 0.45) 0px 25px 20px -20px;
+    -webkit-filter: grayscale(100%);
+    filter: grayscale(100%);
+    opacity: 0.25;
+    z-index: 2;
+}
+
+img.menu-icon-active {
+    -webkit-filter: none;
+    filter: none;
+    opacity: 1;
+}
