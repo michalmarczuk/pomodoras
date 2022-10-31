@@ -1,6 +1,6 @@
 {
   "name": "pomodoras",
-  "version": "0.0.0",
+  "version": "1.0",
   "scripts": {
     "ng": "ng",
     "start" : "node server.js",
@@ -8,7 +8,7 @@
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "heroku-postbuild": "ng build -—prod"
+    "heroku-postbuild": "ng build"
   },
   "private": true,
   "engines": { "node": "18.12.0", "npm": "8.19.2" },
