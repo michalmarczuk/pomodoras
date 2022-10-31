@@ -42,7 +42,7 @@ export class TimerComponent implements OnInit, OnDestroy {
           this.state = 'stop';
           this.onSendUpdateCurrent();
         } else {
-          this.startTimer(this.timerCurrent - timeDiff);
+          this.startTimer(this.timerMax - timeDiff);
           this.counting = true;
         }
       }
