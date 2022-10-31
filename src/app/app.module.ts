@@ -15,6 +15,7 @@ import { AuthInterceptorService } from './pages/auth/auth.interceptor.service';
 import { AuthGuardService } from './pages/auth/auth.guard.service';
 import { ReportsComponent } from './pages/reports/reports.component';
 import { SettingsComponent } from './pages/settings/settings.component';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -32,7 +33,8 @@ import { SettingsComponent } from './pages/settings/settings.component';
     FormsModule, 
     ReactiveFormsModule,
     HttpClientModule,
-    DragDropModule
+    DragDropModule,
+    BrowserAnimationsModule
   ],
   providers: [
     BackendService,

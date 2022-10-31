@@ -3,7 +3,7 @@
     height: 600px;
 }
 
-p {
+p.buttons-container {
     margin-top: 50px;
 }
 
@@ -67,4 +67,18 @@ button {
  background: none;
  box-shadow: none;
  border-radius: 0px;
+}
+
+.pomodoro-list {
+    background-color: #CBD1D7;
+    border-radius: 25px;
+    margin: 50px 20px 0px 20px;
+    height: 395px;
+}
+
+p.pomodoro-list-title {
+    padding-bottom: 30px;
+    font-family: 'Amatic SC', cursive;
+    font-family: 'Indie Flower', cursive;
+    font-size: 30px;
 }

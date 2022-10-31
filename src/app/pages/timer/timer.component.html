@@ -3,18 +3,14 @@
         <div class="row d-flex justify-content-center align-items-center h-250">
             <div class="col-12 col-xl-10">
                 <div class="card border-0">
-                    <div class="container">
+                    <div class="container" cdkDropListGroup>
                         <div class="row">
 
                             <!-- Add drag and drop: https://www.youtube.com/watch?v=O489gFEoj-o -->
                             <div class="col-sm">
-                                <div class="p-5 text-end">
-                                    <img height="75px" width="75px" src="assets/pomodoras_logo_transparent.png">
-                                    <img height="75px" width="75px" src="assets/pomodoras_logo_transparent.png">
-                                    <img height="75px" width="75px" src="assets/pomodoras_logo_transparent.png">
-                                    <img height="75px" width="75px" src="assets/pomodoras_logo_transparent.png">
-                                    <img height="75px" width="75px" src="assets/pomodoras_logo_transparent.png">
-                                    <img height="75px" width="75px" src="assets/pomodoras_logo_transparent.png">
+                                <div id="pomodorosToDo" class="p-2 text-center pomodoro-list" cdkDropList (cdkDropListDropped)="dropPomodoro($event)">
+                                    <p class="pomodoro-list-title">To Do</p>
+                                    <img *ngFor="let pomodoro of pomodoros.getToDoForUI()" height="75px" width="75px" src="assets/pomodoras_logo_transparent.png" cdkDrag>
                                 </div>
                             </div>
 
@@ -37,11 +33,12 @@
                                                   "></path>
                                                 </g>
                                             </svg>
-                                            <span id="base-timer-label" class="base-timer__label">{{ timerCurrent
-                                                }}</span>
+                                            <span id="base-timer-label" class="base-timer__label">
+                                                {{ timerCurrent * 1000 | date:'mm:ss' }}
+                                            </span>
                                         </div>
 
-                                        <p>
+                                        <p class="buttons-container">
                                             <button (click)="onClickStartPausePomodoroTimer()">
                                                 <img src="{{ counting ? 'assets/pause.png' : 'assets/play.png' }}"
                                                     width="50">
@@ -54,13 +51,9 @@
                             </div>
 
                             <div class="col-sm">
-                                <div class="p-5 text-start">
-                                    <img height="75px" width="75px" src="assets/pomodoras_logo_transparent.png">
-                                    <img height="75px" width="75px" src="assets/pomodoras_logo_transparent.png">
-                                    <img height="75px" width="75px" src="assets/pomodoras_logo_transparent.png">
-                                    <img height="75px" width="75px" src="assets/pomodoras_logo_transparent.png">
-                                    <img height="75px" width="75px" src="assets/pomodoras_logo_transparent.png">
-                                    <img height="75px" width="75px" src="assets/pomodoras_logo_transparent.png">
+                                <div id="pomodorosDone" class="p-2 text-center pomodoro-list" cdkDropList (cdkDropListDropped)="dropPomodoro($event)">
+                                    <p class="pomodoro-list-title">Done</p>
+                                    <img *ngFor="let pomodoro of pomodoros.getDoneForUI()"  height="75px" width="75px" src="assets/pomodoras_logo_transparent.png" cdkDrag>
                                 </div>
                             </div>
 

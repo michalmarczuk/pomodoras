@@ -1,7 +1,13 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { BackendService } from 'src/app/services/backend.service';
+import { BackendService, pomodoroTimerResponse, settingsResponse } from 'src/app/services/backend.service';
 import { Subscription, timer, interval } from 'rxjs';
 import { map, take, finalize } from 'rxjs/operators';
+import { CdkDragDrop } from '@angular/cdk/drag-drop';
+import { Pomodoros } from './pomodoros';
+declare function isPermissionGranted(): any;
+declare function requestPermission(): any;
+declare function displayNotification(pomodoros: number): any;
+declare function playSound(): any;
 
 @Component({
   selector: 'app-timer',
@@ -11,36 +17,42 @@ import { map, take, finalize } from 'rxjs/operators';
 export class TimerComponent implements OnInit, OnDestroy {
   circleMax = 283;
   circleCurrent = 0;
-  timerMax = 25;
-  timerCurrent = 25;
+  timerMax!: number;
+  timerCurrent: number = 0;
   counting = false;
+  state = '';
+  pomodoros: Pomodoros = new Pomodoros();
+  settings!: settingsResponse;
+  current!: pomodoroTimerResponse;
   private user = this.backendService.user;
   private pomodoroTimer!: Subscription;
 
   constructor(private backendService: BackendService) { }
 
   async ngOnInit(): Promise<void> {
-    let current = await this.backendService.getPomodoroTimer();
-    if (!!!current) {
-      current = await this.backendService.createPomodoroTimer();
-    }
+    await this.initSettingsAndCurrentState();
+    this.pomodoros = new Pomodoros(this.settings.pomodorosToDo);
+    this.timerMax = this.settings.timerMax;
 
-    if (this.isToday(current.date)) {
-      if (current.state === 'start') {
-        const timeDiff = this.getDiffFromNowToGivenDateInSeconds(new Date(JSON.parse(current.date)));
+    if (this.isToday(this.current.date)) {
+      if (this.current.state === 'start') {
+        const timeDiff = this.getDiffFromNowToGivenDateInSeconds(new Date(JSON.parse(this.current.date)));
         if (timeDiff > this.timerMax) {
-          this.onSendCurrentState('stop');
           this.addPomodoro();
+          this.state = 'stop';
+          this.onSendUpdateCurrent();
         } else {
           this.startTimer(this.timerCurrent - timeDiff);
           this.counting = true;
         }
       }
   
-      if (current.state === 'pause') {
-        this.timerCurrent = current.timerCount;
+      if (this.current.state === 'pause') {
+        this.timerCurrent = this.current.timerCount;
         this.circleCurrent = this.circleMax - ((this.circleMax / this.timerMax) * this.timerCurrent);
       }
+
+      this.pomodoros.putToDone(this.current.pomodorosDone);
     }
   }
 
@@ -50,12 +62,13 @@ export class TimerComponent implements OnInit, OnDestroy {
     }   
   }
 
-  onSendCurrentState(state: string) {
+  onSendUpdateCurrent() {
     this.backendService.updatePomodoroTimer({
       date: JSON.stringify(new Date()),
       timerCount: this.timerCurrent,
-      state,
+      state: this.state,
       user: this.user.value?.email,
+      pomodorosDone: this.pomodoros.getDone(),
     })
   }
 
@@ -65,20 +78,45 @@ export class TimerComponent implements OnInit, OnDestroy {
     }
 
     this.resetTimer();
-    this.onSendCurrentState('stop');
+    this.state = 'stop'
+    this.onSendUpdateCurrent();
   }
 
   async onClickStartPausePomodoroTimer() {
     const current = await this.backendService.getPomodoroTimer();
     if (current.state === 'start') {
-      this.onSendCurrentState('pause');
+      this.state = 'pause'
       this.pomodoroTimer.unsubscribe();
       this.counting = false;
+      this.onSendUpdateCurrent();
     } else {
-      this.onSendCurrentState('start');
       if (this.timerCurrent === 0) this.timerCurrent = this.timerMax;
       this.startTimer(this.timerCurrent);
       this.counting = true;
+      this.state = 'start'
+      this.onSendUpdateCurrent();
+    }
+  }
+
+  dropPomodoro(event: CdkDragDrop<any>) {
+    if (event.container.id !== event.previousContainer.id) {
+      if (event.container.id === 'pomodorosDone') {
+        this.pomodoros.putToDone(1);
+      } else if (event.container.id === 'pomodorosToDo') {
+        this.pomodoros.putToToDo(1);
+      }
+      this.onSendUpdateCurrent();
+    }
+  }
+
+  private async initSettingsAndCurrentState() {
+    this.current = await this.backendService.getPomodoroTimer();
+    this.settings = await this.backendService.getSettings();
+    if (!!!this.current) {
+      this.current = await this.backendService.createPomodoroTimer();
+    }
+    if (!!!this.settings) {
+      this.settings = await this.backendService.createSettings();
     }
   }
 
@@ -92,8 +130,9 @@ export class TimerComponent implements OnInit, OnDestroy {
       .pipe(finalize(async () => {
         if (this.timerCurrent === 0) {
           this.resetTimer();
-          this.onSendCurrentState('stop');
           this.addPomodoro();
+          this.state = 'stop'
+          this.onSendUpdateCurrent();
         }
       }))
       .subscribe((x) => { 
@@ -121,7 +160,15 @@ export class TimerComponent implements OnInit, OnDestroy {
     return Math.round((new Date().getTime() - date.getTime()) / 1000);
   }
 
-  private addPomodoro() {
-    console.log('Pomodoro!!!!!!!');
+  private async addPomodoro() {
+    this.pomodoros.putToDone(1);
+    
+    if (!isPermissionGranted()) {
+      await requestPermission();
+    }
+    
+    displayNotification(this.pomodoros.getDone());
+    playSound();
   }
+
 }

@@ -12,12 +12,20 @@ interface loginResponse {
     expiresIn: string,
 }
 
-interface currentResponse {
+export interface pomodoroTimerResponse {
     id: string,
     date: string,
     timerCount: number,
     state: string,
     user: string,
+    pomodorosDone: number,
+}
+
+export interface settingsResponse {
+    id: string,
+    user: string,
+    pomodorosToDo: number,
+    timerMax: number,
 }
 
 @Injectable()
@@ -28,25 +36,26 @@ export class BackendService {
 
     constructor(private httpClient: HttpClient, private router: Router) { }
 
-    async createPomodoroTimer(): Promise<currentResponse>  {
+    async createPomodoroTimer(): Promise<pomodoroTimerResponse>  {
         await this.httpClient.post(`${this.apiURL}/pomodoroTimer.json`,
         {
             user: this.user.value?.email,
             date: JSON.stringify(new Date()),
             timerCount: 0,
             state: '',
+            pomodorosDone: 0,
         }).toPromise();
 
         return await this.getPomodoroTimer();
     }
 
-    async getPomodoroTimer(): Promise<currentResponse>  {
+    async getPomodoroTimer(): Promise<pomodoroTimerResponse>  {
         const response = await this.httpClient.get(`${this.apiURL}/pomodoroTimer.json`).toPromise();
 
         const usersPomodoroTimers = this.fireBaseResponseToArrayOfCurrentResponse(response);
         const currentUserPomodoroTimer = usersPomodoroTimers.find(o => o.user === this.user.value?.email);
 
-        return currentUserPomodoroTimer as currentResponse;
+        return currentUserPomodoroTimer as pomodoroTimerResponse;
     }
 
     async updatePomodoroTimer(data: any) {
@@ -55,27 +64,29 @@ export class BackendService {
             .subscribe(response => console.log(response));
     }
 
-    // async getCurrent(): Promise<currentResponse>  {
-    //     const response = await this.httpClient.get('https://pomodoras-4403d-default-rtdb.europe-west1.firebasedatabase.app/current.json')
-    //         .toPromise();
-    //     // const id = Object.keys(response)[0];
-
-    //     // return {
-    //     //     id,
-    //     //     ...response[id as keyof Object]
-    //     // } as currentResponse;
-    //     return this.fireBaseResponseToPomodoroTimer(response);
-    // }
-
-    // async updateCurrent(data: any) {
-    //     const CurrentId = (await this.getCurrent()).id;
-    //     this.httpClient.put(`https://pomodoras-4403d-default-rtdb.europe-west1.firebasedatabase.app/current/${CurrentId}.json`, data)
+    // async removeCurrent(id: any) {
+    //     this.httpClient.delete(`https://pomodoras-4403d-default-rtdb.europe-west1.firebasedatabase.app/current/current/${id}`)
     //         .subscribe(response => console.log(response));
     // }
 
-    async removeCurrent(id: any) {
-        this.httpClient.delete(`https://pomodoras-4403d-default-rtdb.europe-west1.firebasedatabase.app/current/current/${id}`)
-            .subscribe(response => console.log(response));
+    async createSettings(): Promise<settingsResponse>  {
+        await this.httpClient.post(`${this.apiURL}/settings.json`,
+        {
+            user: this.user.value?.email,
+            pomodorosToDo: 8,
+            timerMax: 300
+        }).toPromise();
+
+        return await this.getSettings();
+    }
+
+    async getSettings(): Promise<settingsResponse>  {
+        const response = await this.httpClient.get(`${this.apiURL}/settings.json`).toPromise();
+
+        const usersSettings = this.fireBaseResponseToArrayOfCurrentResponse(response);
+        const currentUserPomodoroTimer = usersSettings.find(o => o.user === this.user.value?.email);
+
+        return currentUserPomodoroTimer as settingsResponse;
     }
 
     login(data: any) {
@@ -116,21 +127,21 @@ export class BackendService {
         }
     }
 
-    private fireBaseResponseToPomodoroTimer(response: any) {
-        const id = Object.keys(response)[0];
+    // private fireBaseResponseToPomodoroTimer(response: any) {
+    //     const id = Object.keys(response)[0];
 
-        return {
-            id,
-            ...response[id as keyof Object]
-        } as currentResponse;
-    }
+    //     return {
+    //         id,
+    //         ...response[id as keyof Object]
+    //     } as currentResponse;
+    // }
 
     private fireBaseResponseToArrayOfCurrentResponse(response: any) {
         return Object.keys(response).map(id => {
             return {
                 id,
                 ...response[id as keyof Object]
-            } as currentResponse;
+            };
         });
     }
 }
