@@ -10,6 +10,15 @@ interface loginResponse {
     localId: string,
     idToken: string,
     expiresIn: string,
+    refreshToken: string
+}
+
+interface tokenRefreshResponse {
+    user_id: string,
+    project_id: string,
+    id_token: string,
+    expires_in: string,
+    refresh_token: string
 }
 
 export interface pomodoroTimerResponse {
@@ -32,6 +41,7 @@ export interface settingsResponse {
 export class BackendService {
     user = new BehaviorSubject<User|null>(null);
     private tokenExpirationTimer: any;
+    private refreshTokenInterval: any;
     private apiURL = 'https://pomodoras-4403d-default-rtdb.europe-west1.firebasedatabase.app';
 
     constructor(private httpClient: HttpClient, private router: Router) { }
@@ -99,19 +109,45 @@ export class BackendService {
                 resData.email,
                 resData.localId,
                 resData.idToken,
+                resData.refreshToken,
                 expirationDate
             );
             console.log(user);
 
             localStorage.setItem('userData', JSON.stringify(user));
             this.user.next(user);
-            this.autoLogout(+resData.expiresIn * 1000);
+            // this.autoLogout(+resData.expiresIn * 1000);
+            this.refreshToken(+resData.expiresIn * 1000 / 2);
         }));
     }
 
     autoLogout(expirationDuration: number) {
         this.tokenExpirationTimer = setTimeout(() => {
             this.logout();
+        }, expirationDuration);
+    }
+
+    refreshToken(expirationDuration: number) {
+        this.refreshTokenInterval = setInterval(() => {
+            this.httpClient.post<tokenRefreshResponse>('https://securetoken.googleapis.com/v1/token?key=AIzaSyAY-o2Y6IHk258A-kHAY1dUJRWMh4B5dOY',
+                {
+                    grant_type: 'refresh_token',
+                    refresh_token: this.user.getValue()?.refreshToken
+                }).pipe(catchError(errorRes => {
+                    return throwError(errorRes.error.error.message);
+                }), tap(resData => {
+                    const expirationDate = new Date(new Date().getTime() + +resData.expires_in * 1000);
+                    const user = new User(
+                        this.user.getValue()!.email,
+                        resData.user_id,
+                        resData.id_token,
+                        resData.refresh_token,
+                        expirationDate
+                    );
+        
+                    localStorage.setItem('userData', JSON.stringify(user));
+                    this.user.next(user);
+                })).toPromise();
         }, expirationDuration);
     }
 

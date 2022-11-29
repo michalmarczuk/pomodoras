@@ -3,6 +3,7 @@ export class User {
         public email: string,
         public id: string,
         private _token: string,
+        private _refreshToken: string,
         private _tokenExpirationDate: Date
     ) {}
 
@@ -11,5 +12,9 @@ export class User {
             return null;
         }
         return this._token;
+    }
+
+    get refreshToken() {
+        return this._refreshToken;
     }
 }

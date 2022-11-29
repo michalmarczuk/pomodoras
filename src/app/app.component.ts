@@ -17,7 +17,7 @@ export class AppComponent implements OnInit {
    const userData = JSON.parse(localStorage.getItem('userData')!);
 
    if (userData) {
-     const user = new User(userData.email, userData.id, userData._token, new Date(userData._tokenExpirationDate));
+     const user = new User(userData.email, userData.id, userData._token, userData._refreshToken ,new Date(userData._tokenExpirationDate));
 
      if (user.token) {
       this.backendService.user.next(user);
