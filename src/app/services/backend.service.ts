@@ -1,7 +1,7 @@
 import { Injectable } from "@angular/core";
-import { HttpClient, HttpParams } from "@angular/common/http";
-import { catchError, exhaustMap, take, tap } from "rxjs/operators";
-import { BehaviorSubject, Subject, throwError } from "rxjs";
+import { HttpClient } from "@angular/common/http";
+import { catchError, tap } from "rxjs/operators";
+import { BehaviorSubject, throwError } from "rxjs";
 import { User } from "../pages/auth/user.model";
 import { Router } from "@angular/router";
 
@@ -74,11 +74,6 @@ export class BackendService {
             .subscribe(response => console.log(response));
     }
 
-    // async removeCurrent(id: any) {
-    //     this.httpClient.delete(`https://pomodoras-4403d-default-rtdb.europe-west1.firebasedatabase.app/current/current/${id}`)
-    //         .subscribe(response => console.log(response));
-    // }
-
     async createSettings(): Promise<settingsResponse>  {
         await this.httpClient.post(`${this.apiURL}/settings.json`,
         {
@@ -116,12 +111,16 @@ export class BackendService {
 
             localStorage.setItem('userData', JSON.stringify(user));
             this.user.next(user);
-            // this.autoLogout(+resData.expiresIn * 1000);
-            this.refreshToken(+resData.expiresIn * 1000 / 2);
+            this.autoLogout(+resData.expiresIn * 1000);
+            this.refreshToken(+resData.expiresIn * 1000 * 0.9);
         }));
     }
 
     autoLogout(expirationDuration: number) {
+        if (this.tokenExpirationTimer) {
+            clearTimeout(this.tokenExpirationTimer);
+        }
+
         this.tokenExpirationTimer = setTimeout(() => {
             this.logout();
         }, expirationDuration);
@@ -147,6 +146,7 @@ export class BackendService {
         
                     localStorage.setItem('userData', JSON.stringify(user));
                     this.user.next(user);
+                    this.autoLogout(+resData.expires_in * 1000);
                 })).toPromise();
         }, expirationDuration);
     }
@@ -162,15 +162,6 @@ export class BackendService {
             this.tokenExpirationTimer = null;
         }
     }
-
-    // private fireBaseResponseToPomodoroTimer(response: any) {
-    //     const id = Object.keys(response)[0];
-
-    //     return {
-    //         id,
-    //         ...response[id as keyof Object]
-    //     } as currentResponse;
-    // }
 
     private fireBaseResponseToArrayOfCurrentResponse(response: any) {
         return Object.keys(response).map(id => {

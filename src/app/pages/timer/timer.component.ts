@@ -1,4 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Title } from "@angular/platform-browser";
 import { BackendService, pomodoroTimerResponse, settingsResponse } from 'src/app/services/backend.service';
 import { Subscription, timer, interval } from 'rxjs';
 import { map, take, finalize } from 'rxjs/operators';
@@ -27,12 +28,13 @@ export class TimerComponent implements OnInit, OnDestroy {
   private user = this.backendService.user;
   private pomodoroTimer!: Subscription;
 
-  constructor(private backendService: BackendService) { }
+  constructor(private backendService: BackendService, private titleService: Title) { }
 
   async ngOnInit(): Promise<void> {
     await this.initSettingsAndCurrentState();
     this.pomodoros = new Pomodoros(this.settings.pomodorosToDo);
     this.timerMax = this.settings.timerMax;
+    this.timerCurrent = this.timerMax;
 
     if (this.isToday(this.current.date)) {
       if (this.current.state === 'start') {
@@ -138,12 +140,14 @@ export class TimerComponent implements OnInit, OnDestroy {
       .subscribe((x) => { 
         this.circleCurrent = this.circleMax - ((this.circleMax / this.timerMax) * x);
         this.timerCurrent = x;
+        this.titleService.setTitle(`${String(Math.floor(this.timerCurrent / 60)).padStart(2, '0')}:${String(this.timerCurrent % 60).padStart(2, '0')}`);
     });
   }
 
   private resetTimer() {
     this.timerCurrent = this.timerMax;
     this.circleCurrent = 0;
+    this.titleService.setTitle(`${String(Math.floor(this.timerCurrent / 60)).padStart(2, '0')}:${String(this.timerCurrent % 60).padStart(2, '0')}`);
     this.counting = false;
   }
 
