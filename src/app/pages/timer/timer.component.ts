@@ -21,6 +21,7 @@ export class TimerComponent implements OnInit, OnDestroy {
   timerMax!: number;
   timerCurrent: number = 0;
   counting = false;
+  startStopButtonisDisabled = false;
   state = '';
   pomodoros: Pomodoros = new Pomodoros();
   settings!: settingsResponse;
@@ -64,8 +65,8 @@ export class TimerComponent implements OnInit, OnDestroy {
     }   
   }
 
-  onSendUpdateCurrent() {
-    this.backendService.updatePomodoroTimer({
+  async onSendUpdateCurrent() {
+    await this.backendService.updatePomodoroTimer({
       date: JSON.stringify(new Date()),
       timerCount: this.timerCurrent,
       state: this.state,
@@ -85,19 +86,23 @@ export class TimerComponent implements OnInit, OnDestroy {
   }
 
   async onClickStartPausePomodoroTimer() {
+    this.startStopButtonisDisabled = true;
     const current = await this.backendService.getPomodoroTimer();
+
     if (current.state === 'start') {
       this.state = 'pause'
       this.pomodoroTimer.unsubscribe();
       this.counting = false;
-      this.onSendUpdateCurrent();
+      await this.onSendUpdateCurrent();
     } else {
       if (this.timerCurrent === 0) this.timerCurrent = this.timerMax;
       this.startTimer(this.timerCurrent);
       this.counting = true;
       this.state = 'start'
-      this.onSendUpdateCurrent();
+      await this.onSendUpdateCurrent();
     }
+
+    this.startStopButtonisDisabled = false;
   }
 
   dropPomodoro(event: CdkDragDrop<any>) {

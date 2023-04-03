@@ -70,8 +70,7 @@ export class BackendService {
 
     async updatePomodoroTimer(data: any) {
         const CurrentId = (await this.getPomodoroTimer()).id;
-        this.httpClient.put(`${this.apiURL}/pomodoroTimer/${CurrentId}.json`, data)
-            .subscribe(response => console.log(response));
+        await this.httpClient.put(`${this.apiURL}/pomodoroTimer/${CurrentId}.json`, data).toPromise();
     }
 
     async createSettings(): Promise<settingsResponse>  {

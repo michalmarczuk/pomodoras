@@ -39,11 +39,11 @@
                                         </div>
 
                                         <p class="buttons-container">
-                                            <button (click)="onClickStartPausePomodoroTimer()">
+                                            <button id="{{ counting ? 'pauseButton' : 'startButton' }}" (click)="onClickStartPausePomodoroTimer()" [disabled]="startStopButtonisDisabled">
                                                 <img src="{{ counting ? 'assets/pause.png' : 'assets/play.png' }}"
                                                     width="50">
                                             </button>
-                                            <button (click)="onClickStopPomodoroTimer()"><img src="assets/stop.png"
+                                            <button id="stopButton" (click)="onClickStopPomodoroTimer()"><img src="assets/stop.png"
                                                     width="50"></button>
                                         </p>
                                     </div>

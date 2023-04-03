@@ -3,15 +3,21 @@
   "version": "1.0.1",
   "scripts": {
     "ng": "ng",
-    "start" : "node server.js",
+    "start": "node server.js",
     "build": "ng build",
     "test": "ng test",
     "lint": "ng lint",
     "e2e": "ng e2e",
-    "heroku-postbuild": "ng build"
+    "heroku-postbuild": "ng build",
+    "cypress:open": "cypress open",
+    "cypress:run": "cypress run",
+    "cy:run": "pwd && ng serve & sleep 18 && npm run cypress:run"
   },
   "private": true,
-  "engines": { "node": "18.12.0", "npm": "8.19.2" },
+  "engines": {
+    "node": "18.12.0",
+    "npm": "8.19.2"
+  },
   "dependencies": {
     "@angular/animations": "^14.2.0",
     "@angular/common": "^14.2.0",
@@ -33,7 +39,9 @@
     "@angular-devkit/build-angular": "^14.2.8",
     "@angular/cli": "~14.2.8",
     "@angular/compiler-cli": "^14.2.0",
+    "@cypress/schematic": "^2.4.0",
     "@types/jasmine": "~4.0.0",
+    "cypress": "^12.0.2",
     "jasmine-core": "~4.3.0",
     "karma": "~6.4.0",
     "karma-chrome-launcher": "~3.1.0",
