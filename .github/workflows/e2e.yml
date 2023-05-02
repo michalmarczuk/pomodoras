@@ -27,5 +27,6 @@ jobs:
         cache: 'npm'
     - run: npm install -g @angular/cli@latest
     - run: npm install
+    - run: npm run ci:set-test-data
     - run: ng serve & sleep 20 && npm run cypress:run
 
