@@ -3,12 +3,13 @@ import { LoginPage } from "cypress/pages/loginPage";
 Cypress.Commands.add('cleanUpDB', () => {
     cy.log('Cleaning up the database data');
 
-    return cy.request(
+    return cy.fixture('data.json').then((data) => {
+      cy.request(
       'POST',
       'https://identitytoolkit.googleapis.com/v1/accounts:signInWithPassword?key=AIzaSyAY-o2Y6IHk258A-kHAY1dUJRWMh4B5dOY',
       {
-          email: "john.connor@sky.net",
-          password: "Doopa1234",
+          email: data.user.email,
+          password: data.user.password,
           returnSecureToken: true
       }).then(response => {
         cy.request(
@@ -21,12 +22,13 @@ Cypress.Commands.add('cleanUpDB', () => {
           }
         )
       })
+    });
 })
 
 Cypress.Commands.add('login', () => {
     const loginPage: LoginPage = new LoginPage();
     loginPage.open();
-
+    
     return cy.fixture('data.json').then((data) => {
       loginPage.login(data.user.email, data.user.password);
     });

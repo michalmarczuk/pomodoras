@@ -2,16 +2,10 @@
   "name": "pomodoras",
   "version": "1.0.1",
   "scripts": {
-    "ng": "ng",
-    "start": "node server.js",
-    "build": "ng build",
-    "test": "ng test",
-    "lint": "ng lint",
-    "e2e": "ng e2e",
-    "heroku-postbuild": "ng build",
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
-    "cy:run": "pwd && ng serve & sleep 18 && npm run cypress:run"
+    "ci:set-test-data": "node setTestData.js",
+    "ci:test": "pwd && ng serve & sleep 18 && npm run cypress:run"
   },
   "private": true,
   "engines": {
