@@ -29,6 +29,7 @@ jobs:
         TEST_USER_PASSWORD: ${{ secrets.TEST_USER_PASSWORD }}
     - run: npm install -g @angular/cli@latest
     - run: npm install
+    - run: export TEST_USER_PASSWORD=${TEST_USER_PASSWORD}
     - run: node setTestData.js
     - run: ng serve & sleep 20 && npm run cypress:run
 
