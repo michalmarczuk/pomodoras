@@ -5,7 +5,7 @@
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
     "ci:set-test-data": "node setTestData.js",
-    "ci:test": "pwd && ng serve & sleep 18 && npm run cypress:run"
+    "ci:test": "pwd && ng serve & sleep 30 && npm run cypress:run"
   },
   "private": true,
   "engines": {
