@@ -31,4 +31,8 @@ describe('Timer component', () => {
     timerPage.clickPauseButton();
     timerPage.timerShouldEqual('00:18');
   })
+
+  it('Dummy fails test', () => {
+    expect(20).to.be.greaterThan(30);
+  })
 })
