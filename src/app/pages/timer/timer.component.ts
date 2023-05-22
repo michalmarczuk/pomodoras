@@ -56,8 +56,9 @@ export class TimerComponent implements OnInit, OnDestroy {
       }
 
       this.pomodoros.putToDone(this.current.pomodorosDone);
-      this.startStopButtonisDisabled = false; //Enable start/stop button when everything is loaded
     }
+    
+    this.startStopButtonisDisabled = false; //Enable start/stop button when everything is loaded
   }
 
   async ngOnDestroy(): Promise<void> {
