@@ -16,4 +16,8 @@ export class TimerPage extends Page {
     timerShouldEqual(expectedTimerCount: string) {
         cy.get('#base-timer-label').contains(expectedTimerCount);
     }
+
+    pomodorosDoneShouldEqual(expectedPomodorosDone: number) {
+        cy.get('#pomodorosDone').find('img').should('have.length', expectedPomodorosDone);
+    }
 }

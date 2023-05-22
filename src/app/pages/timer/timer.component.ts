@@ -1,7 +1,7 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Title } from "@angular/platform-browser";
 import { BackendService, pomodoroTimerResponse, settingsResponse } from 'src/app/services/backend.service';
-import { Subscription, timer, interval } from 'rxjs';
+import { Subscription, timer } from 'rxjs';
 import { map, take, finalize } from 'rxjs/operators';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { Pomodoros } from './pomodoros';
@@ -21,7 +21,7 @@ export class TimerComponent implements OnInit, OnDestroy {
   timerMax!: number;
   timerCurrent: number = 0;
   counting = false;
-  startStopButtonisDisabled = false;
+  startStopButtonisDisabled = true;
   state = '';
   pomodoros: Pomodoros = new Pomodoros();
   settings!: settingsResponse;
@@ -56,6 +56,7 @@ export class TimerComponent implements OnInit, OnDestroy {
       }
 
       this.pomodoros.putToDone(this.current.pomodorosDone);
+      this.startStopButtonisDisabled = false; //Enable start/stop button when everything is loaded
     }
   }
 
