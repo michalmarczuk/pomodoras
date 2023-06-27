@@ -16,6 +16,7 @@ import { AuthGuardService } from './pages/auth/auth.guard.service';
 import { ReportsComponent } from './pages/reports/reports.component';
 import { SettingsComponent } from './pages/settings/settings.component';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { FrontendService } from './services/frontend.service';
 
 @NgModule({
   declarations: [
@@ -38,6 +39,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
   ],
   providers: [
     BackendService,
+    FrontendService,
     {provide: HTTP_INTERCEPTORS, useClass: AuthInterceptorService, multi: true},
     AuthGuardService
   ],

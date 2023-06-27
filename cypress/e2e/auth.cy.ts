@@ -16,6 +16,6 @@ describe('Auth component', () => {
     loginPage.login(user.email, user.password);
 
     const timerPage = new TimerPage();
-    timerPage.isPageLoaded();
+    timerPage.waitForPageLoaded();
   })
 })

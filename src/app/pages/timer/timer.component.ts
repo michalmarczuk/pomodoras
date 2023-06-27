@@ -5,6 +5,7 @@ import { Subscription, timer } from 'rxjs';
 import { map, take, finalize } from 'rxjs/operators';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { Pomodoros } from './pomodoros';
+import { FrontendService } from 'src/app/services/frontend.service';
 declare function isPermissionGranted(): any;
 declare function requestPermission(): any;
 declare function displayNotification(pomodoros: number): any;
@@ -21,7 +22,7 @@ export class TimerComponent implements OnInit, OnDestroy {
   timerMax!: number;
   timerCurrent: number = 0;
   counting = false;
-  startStopButtonisDisabled = true;
+  startStopButtonisDisabled!: boolean;
   state = '';
   pomodoros: Pomodoros = new Pomodoros();
   settings!: settingsResponse;
@@ -29,9 +30,12 @@ export class TimerComponent implements OnInit, OnDestroy {
   private user = this.backendService.user;
   private pomodoroTimer!: Subscription;
 
-  constructor(private backendService: BackendService, private titleService: Title) { }
+  constructor(private backendService: BackendService, public frontendService: FrontendService, private titleService: Title) { }
 
-  async ngOnInit(): Promise<void> {
+  async ngOnInit(): Promise<void> {    
+    this.frontendService.waitForProcessing.subscribe((v) => this.startStopButtonisDisabled = v);
+
+    await this.waitForLoading(); //Enable start/stop button when everything is loaded
     await this.initSettingsAndCurrentState();
     this.pomodoros = new Pomodoros(this.settings.pomodorosToDo);
     this.timerMax = this.settings.timerMax;
@@ -57,14 +61,14 @@ export class TimerComponent implements OnInit, OnDestroy {
 
       this.pomodoros.putToDone(this.current.pomodorosDone);
     }
-    
-    this.startStopButtonisDisabled = false; //Enable start/stop button when everything is loaded
+
+    this.frontendService.waitForProcessing.next(false);
   }
 
   async ngOnDestroy(): Promise<void> {
     if (this.pomodoroTimer) {
       this.pomodoroTimer.unsubscribe();
-    }   
+    }
   }
 
   async onSendUpdateCurrent() {
@@ -88,7 +92,7 @@ export class TimerComponent implements OnInit, OnDestroy {
   }
 
   async onClickStartPausePomodoroTimer() {
-    this.startStopButtonisDisabled = true;
+    this.frontendService.waitForProcessing.next(true);
     const current = await this.backendService.getPomodoroTimer();
 
     if (current.state === 'start') {
@@ -104,7 +108,7 @@ export class TimerComponent implements OnInit, OnDestroy {
       await this.onSendUpdateCurrent();
     }
 
-    this.startStopButtonisDisabled = false;
+    this.frontendService.waitForProcessing.next(false);
   }
 
   dropPomodoro(event: CdkDragDrop<any>) {
@@ -126,6 +130,14 @@ export class TimerComponent implements OnInit, OnDestroy {
     }
     if (!!!this.settings) {
       this.settings = await this.backendService.createSettings();
+    }
+  }
+
+  private async waitForLoading() {
+    let tries = 30;
+    while (this.startStopButtonisDisabled && tries > 0) {
+      await new Promise(resolve => setTimeout(resolve, 100));
+      tries--;
     }
   }
 

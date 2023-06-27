@@ -1,3 +1,5 @@
+import { TopBarMenu } from "cypress/common/topBarMenu";
+
 export class Page {
     path: string;
     css: string;
@@ -9,11 +11,14 @@ export class Page {
 
     open() {
         cy.visit(this.path);
-        this.isPageLoaded();
+        this.waitForPageLoaded();
     }
 
-    isPageLoaded(): boolean {
-        console.log(cy.get(this.css).should('be.visible'));
-        return true;
+    waitForPageLoaded(): void {
+        cy.get(this.css).should('be.visible')
+    }
+
+    getTopBarMenu() {
+        return new TopBarMenu();
     }
 }

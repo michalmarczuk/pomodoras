@@ -26,5 +26,4 @@ export class HeaderComponent implements OnInit, OnDestroy {
   onClickLogoutButton() {
     this.backendService.logout();
   }
-
 }
