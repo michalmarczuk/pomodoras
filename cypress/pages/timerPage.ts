@@ -9,6 +9,10 @@ export class TimerPage extends Page {
         cy.get('#startButton').should('not.be.disabled').click();
     }
 
+    clickStopButton() {
+        cy.get('#stopButton').should('not.be.disabled').click();
+    }
+
     clickPauseButton() {
         cy.get('#pauseButton').should('not.be.disabled').click();
     }
