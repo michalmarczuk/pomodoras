@@ -1,4 +1,5 @@
 import { LoginPage } from "cypress/pages/loginPage";
+import { TimerPage } from "cypress/pages/timerPage";
 
 Cypress.Commands.add('cleanUpDB', () => {
     cy.log('Cleaning up the database data');
@@ -29,7 +30,10 @@ Cypress.Commands.add('login', () => {
     const loginPage: LoginPage = new LoginPage();
     loginPage.open();
     
-    return cy.fixture('data.json').then((data) => {
+    cy.fixture('data.json').then((data) => {
       loginPage.login(data.user.email, data.user.password);
+
+      const timerPage = new TimerPage();
+      timerPage.waitForPageLoaded();
     });
 })
