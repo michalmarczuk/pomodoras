@@ -23,4 +23,6 @@ jobs:
       with:
         node-version: ${{ matrix.node-version }}
         cache: 'npm'
+    - run: git config --global user.email "git@schab.com"
+    - run: git config --global user.name "Mr. GitHub"
     - run: npm version patch --force
