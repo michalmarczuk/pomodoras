@@ -5,24 +5,17 @@ name: Master branch bump up version
 
 on:
   push:
-    branches: [ "master" ]
+    branches:
+      - master
+  pull_request:
+    types:
+      - labeled
 
 jobs:
-  build:
+  release:
     runs-on: ubuntu-latest
-
-    strategy:
-      matrix:
-        node-version: [18.x]
-
     steps:
-    - uses: actions/checkout@v3
-    - name: Use Node.js ${{ matrix.node-version }}
-      uses: actions/setup-node@v3
-      with:
-        node-version: ${{ matrix.node-version }}
-        cache: 'npm'
-    - run: git config --global user.email "git@schab.com"
-    - run: git config --global user.name "Mr. GitHub"
-    - run: npm version patch --force
-    - run: git push origin master
+      - uses: actions/checkout@v2
+      # Bump version on merging Pull Requests with specific labels.
+      # (bump:major,bump:minor,bump:patch)
+      - uses: haya14busa/action-bumpr@v1
