@@ -12,11 +12,12 @@ on:
 jobs:
   version:
     runs-on: ubuntu-latest
+    if: "!startsWith(github.event.head_commit.message, '[RELEASE]')"
     steps:
       - uses: actions/checkout@v2
         with:
           token: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
       - run: git config --global user.name 'Git Schab'
       - run: git config --global user.email 'git@schab.it'
-      - run: npm version minor --force
+      - run: npm version minor -m "[RELEASE] %s" --force
       - run: git push
