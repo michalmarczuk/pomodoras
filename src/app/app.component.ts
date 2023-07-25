@@ -1,6 +1,8 @@
 import { Component, OnInit } from '@angular/core';
 import { User } from './pages/auth/user.model';
 import { BackendService } from './services/backend.service';
+import { Meta } from "@angular/platform-browser";
+import packageInfo from '../../package.json';
 
 @Component({
   selector: 'app-root',
@@ -9,10 +11,16 @@ import { BackendService } from './services/backend.service';
 })
 export class AppComponent implements OnInit {
   title = 'pomodoras';
+  version = packageInfo.version;
 
-  constructor(private backendService: BackendService) {}
+  constructor(private backendService: BackendService, private meta: Meta) {}
   
   ngOnInit() {
+   this.meta.addTag({
+    name: 'version',
+    content: this.version
+  });
+
    //TODO: Move code below to separated method - autoLogin in backend service
    const userData = JSON.parse(localStorage.getItem('userData')!);
 
