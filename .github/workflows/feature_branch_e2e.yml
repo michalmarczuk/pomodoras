@@ -12,7 +12,6 @@ env:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
 
     strategy:
@@ -31,8 +30,11 @@ jobs:
     - run: node setTestData.js && echo $TEST_USER_PASSWORD
     - run: ng serve & sleep 30 && npm run cypress:run
 
+  label:
+    runs-on: ubuntu-latest
+    if: contains(github.head_ref, 'minor_')
+    steps:
     - name: Add the project label
       uses: andymckay/labeler@master
-      if: contains(github.head_ref, 'minor_')
       with:
         add-labels: "minor"
