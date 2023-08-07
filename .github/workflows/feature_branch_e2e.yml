@@ -30,3 +30,9 @@ jobs:
     - run: npm install
     - run: node setTestData.js && echo $TEST_USER_PASSWORD
     - run: ng serve & sleep 30 && npm run cypress:run
+
+    - name: Add the project label
+      uses: andymckay/labeler@master
+      if: contains(github.base_ref, 'minor_')
+      with:
+        add-labels: "minor"
