@@ -33,6 +33,6 @@ jobs:
 
     - name: Add the project label
       uses: andymckay/labeler@master
-      if: contains(github.base_ref, 'minor_')
+      if: contains(github.head_ref, 'minor_')
       with:
         add-labels: "minor"
