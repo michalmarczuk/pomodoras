@@ -24,4 +24,5 @@ jobs:
       - run: npm version minor -m "[RELEASE] %s" --force
         if: contains(github.event.pull_request.labels.*.name, 'patch')
       - run: npm version patch -m "[RELEASE] %s" --force
+      - run: echo github.event.pull_request.labels.*.name
       - run: git push
