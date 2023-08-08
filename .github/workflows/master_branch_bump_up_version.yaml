@@ -18,11 +18,11 @@ jobs:
           token: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
       - run: git config --global user.name 'Git Schab'
       - run: git config --global user.email 'git@schab.it'
-        if: contains(github.event.pull_request.labels.*.name, 'major')
+        if: ${{ github.event.label.name == 'major' }}
       - run: npm version major -m "[RELEASE] %s" --force
-        if: contains(github.event.pull_request.labels.*.name, 'minor')
+        if: ${{ github.event.label.name == 'minor' }}
       - run: npm version minor -m "[RELEASE] %s" --force
-        if: contains(toJson(github.event.pull_request.labels.*.name), 'patch')
+        if: ${{ github.event.label.name == 'patch' }}
       - run: npm version patch -m "[RELEASE] %s" --force
-      - run: echo github.event.pull_request.labels.*.name
+      - run: echo ${{ github.event.label.name }}
       - run: git push
