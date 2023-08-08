@@ -1,6 +1,6 @@
 {
   "name": "pomodoras",
-  "version": "1.5.2",
+  "version": "1.5.3",
   "scripts": {
     "cypress:open": "cypress open",
     "cypress:run": "cypress run",
