@@ -26,6 +26,7 @@ jobs:
 
         if: contains(toJSON(github.event.commits), 'minor_')
       - run: npm version minor -m "[RELEASE] %s" --force
+      - run: contains(toJSON(github.event.commits), 'minor_')
 
       - run: echo ${{ github.event.label.name }}
       - run: git push
