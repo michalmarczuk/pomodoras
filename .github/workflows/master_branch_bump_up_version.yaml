@@ -23,11 +23,9 @@ jobs:
       - run: echo "$GITHUB_CONTEXT"
       - run: git config --global user.name 'Git Schab'
       - run: git config --global user.email 'git@schab.it'
-        if: ${{ github.event.label.name == 'major' }}
-      - run: npm version major -m "[RELEASE] %s" --force
-        if: ${{ github.event.label.name == 'minor' }}
+
+        if: contains(toJSON(github.event.commits), 'minor_')
       - run: npm version minor -m "[RELEASE] %s" --force
-        if: ${{ github.event.label.name == 'patch' }}
-      - run: npm version patch -m "[RELEASE] %s" --force
+
       - run: echo ${{ github.event.label.name }}
       - run: git push
