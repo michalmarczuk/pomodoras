@@ -8,6 +8,9 @@ on:
     branches:
       - master
 
+env:
+  GITHUB_CONTEXT: ${{ toJson(github) }}
+
 jobs:
   version:
     runs-on: ubuntu-latest
@@ -16,6 +19,8 @@ jobs:
       - uses: actions/checkout@v2
         with:
           token: ${{ secrets.GH_PERSONAL_ACCESS_TOKEN }}
+      - run: echo "----"
+      - run: echo "$GITHUB_CONTEXT"
       - run: git config --global user.name 'Git Schab'
       - run: git config --global user.email 'git@schab.it'
         if: ${{ github.event.label.name == 'major' }}
