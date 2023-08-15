@@ -23,7 +23,7 @@ jobs:
       - run: git config --global user.email 'git@schab.it'
 
       - name: major
-        if: ${{contains(toJSON(github.event.commits), 'minor_')}}
+        if: ${{contains(toJSON(github.event.commits), 'major_')}}
         run: npm version major -m "[RELEASE] %s" --force
       
       - name: minor
@@ -31,7 +31,7 @@ jobs:
         run: npm version minor -m "[RELEASE] %s" --force
 
       - name: patch
-        if: ${{contains(toJSON(github.event.commits), 'minor_')}}
+        if: ${{contains(toJSON(github.event.commits), 'patch_')}}
         run: npm version patch -m "[RELEASE] %s" --force
         
       - run: git push
