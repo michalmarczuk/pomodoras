@@ -32,9 +32,22 @@ jobs:
 
   label:
     runs-on: ubuntu-latest
-    if: contains(github.head_ref, 'minor_')
     steps:
-    - name: Add the project label
+
+    - name: major
+      if: contains(github.head_ref, 'major_')
+      uses: andymckay/labeler@master
+      with:
+        add-labels: "major"
+
+    - name: minor
+      if: contains(github.head_ref, 'minor_')
       uses: andymckay/labeler@master
       with:
         add-labels: "minor"
+
+    - name: patch
+      if: contains(github.head_ref, 'patch_')
+      uses: andymckay/labeler@master
+      with:
+        add-labels: "patch"
