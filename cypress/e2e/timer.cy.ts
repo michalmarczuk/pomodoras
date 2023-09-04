@@ -44,7 +44,7 @@ describe('Timer component', () => {
     timerPage.pomodorosDoneShouldEqual(1);
   })
 
-  it.only('Can count pomodoros in background', () => {
+  it('Can count pomodoros in background', () => {
     cy.cleanUpDB();
     cy.login();
 
