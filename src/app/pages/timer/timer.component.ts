@@ -21,6 +21,7 @@ export class TimerComponent implements OnInit, OnDestroy {
   circleCurrent = 0;
   timerMax!: number;
   timerCurrent: number = 0;
+  timerStartedAt: number = 0;
   counting = false;
   startStopButtonisDisabled!: boolean;
   state = '';
@@ -145,6 +146,8 @@ export class TimerComponent implements OnInit, OnDestroy {
     //timer(delay, interval)
     //map - i on iterations => 1, 2, 3, ...
     //take - take number of elements
+    this.timerStartedAt = Math.floor(Date.now() / 1000);
+
     this.pomodoroTimer = timer(0, 1000)
       .pipe(map((i) => seconds - i))
       .pipe(take(seconds + 1))
@@ -156,9 +159,10 @@ export class TimerComponent implements OnInit, OnDestroy {
           this.onSendUpdateCurrent();
         }
       }))
-      .subscribe((x) => { 
-        this.circleCurrent = this.circleMax - ((this.circleMax / this.timerMax) * x);
-        this.timerCurrent = x;
+      .subscribe((x) => {
+        this.timerCurrent = seconds - Math.floor(Date.now() / 1000 - this.timerStartedAt);
+        this.circleCurrent = this.circleMax - ((this.circleMax / this.timerMax) * this.timerCurrent);
+
         this.titleService.setTitle(`${String(Math.floor(this.timerCurrent / 60)).padStart(2, '0')}:${String(this.timerCurrent % 60).padStart(2, '0')}`);
     });
   }

@@ -44,6 +44,22 @@ describe('Timer component', () => {
     timerPage.pomodorosDoneShouldEqual(1);
   })
 
+  it('Can count pomodoros in background', () => {
+    cy.cleanUpDB();
+    cy.login();
+
+    const timerPage = new TimerPage();
+    timerPage.clickStartButton();
+
+    const topBarMenu = timerPage.getTopBarMenu();
+    topBarMenu.clickSettingsLink();
+    cy.wait(11000);
+
+    topBarMenu.clickTimerLink();
+    timerPage.waitForPageLoaded();
+    timerPage.pomodorosDoneShouldEqual(1);
+  })
+
   it('Can drag pomodoros', () => {
     cy.cleanUpDB();
     cy.login();
