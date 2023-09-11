@@ -2,7 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Title } from "@angular/platform-browser";
 import { BackendService, pomodoroTimerResponse, settingsResponse } from 'src/app/services/backend.service';
 import { Subscription, timer } from 'rxjs';
-import { map, take, finalize } from 'rxjs/operators';
+import { map, take, finalize, takeWhile } from 'rxjs/operators';
 import { CdkDragDrop } from '@angular/cdk/drag-drop';
 import { Pomodoros } from './pomodoros';
 import { FrontendService } from 'src/app/services/frontend.service';
@@ -144,11 +144,13 @@ export class TimerComponent implements OnInit, OnDestroy {
 
   private startTimer(seconds: number) {
     //timer(delay, interval)
+    //takeWhile - if counter has negative value then stop timer
     //map - i on iterations => 1, 2, 3, ...
     //take - take number of elements
     this.timerStartedAt = Math.floor(Date.now() / 1000);
 
     this.pomodoroTimer = timer(0, 1000)
+      .pipe(takeWhile(_ => seconds - Math.floor(Date.now() / 1000 - this.timerStartedAt) >= 0))
       .pipe(map((i) => seconds - i))
       .pipe(take(seconds + 1))
       .pipe(finalize(async () => {
