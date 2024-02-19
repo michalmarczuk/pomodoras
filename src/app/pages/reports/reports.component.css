@@ -6,3 +6,15 @@
 p {
     margin-top: 100px;
 }
+
+#chartContainer {
+    background-color: #CBD1D7;
+    border-radius: 25px;
+    width: 94%;
+    margin: auto;
+    margin-top: 50px;
+}
+
+img {
+    margin: 40px 15px 15px 0px;
+}
