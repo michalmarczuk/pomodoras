@@ -48,7 +48,8 @@ export class TimerComponent implements OnInit, OnDestroy {
         if (timeDiff > this.timerMax) {
           this.addPomodoro();
           this.state = 'stop';
-          this.onSendUpdateCurrent();
+          await this.onSendUpdateCurrent();
+          await this.backendService.updateHistory();
         } else {
           this.startTimer(this.timerMax - timeDiff);
           this.counting = true;
@@ -82,14 +83,15 @@ export class TimerComponent implements OnInit, OnDestroy {
     })
   }
 
-  onClickStopPomodoroTimer() {
+  async onClickStopPomodoroTimer() {
     if (this.pomodoroTimer) {
       this.pomodoroTimer.unsubscribe();
     }
 
     this.resetTimer();
     this.state = 'stop'
-    this.onSendUpdateCurrent();
+    await this.onSendUpdateCurrent();
+    await this.backendService.updateHistory();
   }
 
   async onClickStartPausePomodoroTimer() {
@@ -101,25 +103,28 @@ export class TimerComponent implements OnInit, OnDestroy {
       this.pomodoroTimer.unsubscribe();
       this.counting = false;
       await this.onSendUpdateCurrent();
+      await this.backendService.updateHistory();
     } else {
       if (this.timerCurrent === 0) this.timerCurrent = this.timerMax;
       this.startTimer(this.timerCurrent);
       this.counting = true;
       this.state = 'start'
       await this.onSendUpdateCurrent();
+      await this.backendService.updateHistory();
     }
 
     this.frontendService.waitForProcessing.next(false);
   }
 
-  dropPomodoro(event: CdkDragDrop<any>) {
+  async dropPomodoro(event: CdkDragDrop<any>) {
     if (event.container.id !== event.previousContainer.id) {
       if (event.container.id === 'pomodorosDone') {
         this.pomodoros.putToDone(1);
       } else if (event.container.id === 'pomodorosToDo') {
         this.pomodoros.putToToDo(1);
       }
-      this.onSendUpdateCurrent();
+      await this.onSendUpdateCurrent();
+      await this.backendService.updateHistory();
     }
   }
 
@@ -158,7 +163,8 @@ export class TimerComponent implements OnInit, OnDestroy {
           this.resetTimer();
           this.addPomodoro();
           this.state = 'stop'
-          this.onSendUpdateCurrent();
+          await this.onSendUpdateCurrent();
+          await this.backendService.updateHistory();
         }
       }))
       .subscribe((x) => {

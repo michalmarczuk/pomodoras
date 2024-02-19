@@ -37,6 +37,18 @@ export interface settingsResponse {
     timerMax: number,
 }
 
+export interface historyResponse {
+    id: string,
+    user: string,
+    days: day[]
+}
+
+export interface day {
+    pomodorosToDo: number,
+    pomodorosDone: number,
+    date: string
+}
+ 
 @Injectable()
 export class BackendService {
     user = new BehaviorSubject<User|null>(null);
@@ -88,9 +100,41 @@ export class BackendService {
         const response = await this.httpClient.get(`${this.apiURL}/settings.json`).toPromise();
 
         const usersSettings = this.fireBaseResponseToArrayOfCurrentResponse(response);
-        const currentUserPomodoroTimer = usersSettings.find(o => o.user === this.user.value?.email);
+        const currentUserSettings = usersSettings.find(o => o.user === this.user.value?.email);
 
-        return currentUserPomodoroTimer as settingsResponse;
+        return currentUserSettings as settingsResponse;
+    }
+
+    async updateHistory(): Promise<historyResponse> {
+        const history = await this.getHistory();
+        if (!history) return await this.initHistory();
+
+        const pomodorosDone = (await this.getPomodoroTimer()).pomodorosDone;
+        const pomodorosToDo = (await this.getSettings()).pomodorosToDo - pomodorosDone;
+
+        let todayIndex = history.days.findIndex(day => day.date.toString() === new Date().toISOString().slice(0, 10));
+        if (todayIndex === -1) todayIndex = history.days.length;
+        const userID = history.id;
+
+        const response = await this.httpClient.patch(`${this.apiURL}//history/${userID}/days/${todayIndex}.json`,
+        {
+            pomodorosToDo: pomodorosToDo,
+            pomodorosDone: pomodorosDone,
+            date: new Date().toISOString().slice(0, 10)
+        }).toPromise();
+
+        return response as historyResponse;
+    }
+
+    async getHistory(): Promise<historyResponse> {
+        const response = await this.httpClient.get(`${this.apiURL}/history.json`).toPromise();
+        if (response === null) return response;
+
+        const userHistory = this.fireBaseResponseToArrayOfCurrentResponse(response);
+        const currentUserHistory = userHistory.find(o => o.user === this.user.value?.email);
+        if (currentUserHistory === undefined) return currentUserHistory;
+
+        return currentUserHistory as historyResponse;
     }
 
     login(data: any) {
@@ -106,7 +150,6 @@ export class BackendService {
                 resData.refreshToken,
                 expirationDate
             );
-            console.log(user);
 
             localStorage.setItem('userData', JSON.stringify(user));
             this.user.next(user);
@@ -169,5 +212,22 @@ export class BackendService {
                 ...response[id as keyof Object]
             };
         });
+    }
+
+    private async initHistory(): Promise<historyResponse> {
+        const pomodorosDone = (await this.getPomodoroTimer()).pomodorosDone;
+        const pomodorosToDo = (await this.getSettings()).pomodorosToDo - pomodorosDone;
+
+        const response = await this.httpClient.post(`${this.apiURL}/history.json`,
+        {
+            user: this.user.value?.email,
+            days: [{
+                pomodorosToDo,
+                pomodorosDone,
+                date: new Date().toISOString().slice(0, 10)
+            }]
+        }).toPromise();
+
+        return response as historyResponse;
     }
 }

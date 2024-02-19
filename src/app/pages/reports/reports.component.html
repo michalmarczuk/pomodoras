@@ -3,11 +3,11 @@
         <div class="row d-flex justify-content-center align-items-center h-250">
             <div class="col-12 col-xl-10">
                 <div class="card border-0">
-                    <div class="p-5 text-center">
-                        
-                        <p>reports works! reports works! reports works! reports works! reports works! reports works! reports works! reports works! reports works! reports works! reports works! reports works! reports works! reports works! reports works! reports works! reports works! reports works! reports works! </p>
-
-
+                    <div id=chartContainer class="ps-3 pe-4 py-3 text-center">
+                        <canvas id="myChart"></canvas>
+                        <img (click)="updateChartDay()" src="assets/day.png" height="65px">
+                        <img (click)="updateChartWeek()" src="assets/week.png" height="65px">
+                        <img (click)="updateChartMonth()" src="assets/month.png" height="65px">
                     </div>
                 </div>
             </div>

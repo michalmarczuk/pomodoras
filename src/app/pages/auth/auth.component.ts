@@ -21,12 +21,9 @@ export class AuthComponent implements OnInit {
 
     this.backendService.login({ email: form.value.email, password: form.value.password }).subscribe(
       response => {
-        console.log(response);
-        // this.error = "";
         this.router.navigate(['/timer']);
       },
       error => {
-        console.log(error);
         this.error = error;
       }
     );
