@@ -24,33 +24,36 @@ export class ReportsComponent implements OnInit {
   }
 
   public async updateChartDay() {
+    const pomodorosToDo = (await this.backendService.getSettings()).pomodorosToDo;
     const days: dayOnChart[] = await this.getDaysData(this.getLastNDays(5));
     this.updateChartData(days);
 
     this.chart.data.labels = this.getDaysLabels();
     this.chart.update();
 
-    this.setYAxisMax(9);
+    this.setYAxisMax(pomodorosToDo + 1);
   }
 
   public async updateChartWeek() {
+    const pomodorosToDo = (await this.backendService.getSettings()).pomodorosToDo;
     const days: dayOnChart[] = await this.getWeeksData(this.getLastNWeeks(5));
 
     this.updateChartData(days);
     this.chart.data.labels= this.getWeeksLabels();
     this.chart.update();
 
-    this.setYAxisMax(60);
+    this.setYAxisMax(Math.ceil((pomodorosToDo * 7 + pomodorosToDo / 2) / 10) * 10);
   }
 
   public async updateChartMonth() {
+    const pomodorosToDo = (await this.backendService.getSettings()).pomodorosToDo;
     const days: dayOnChart[] = await this.getMonthsData(this.getLastNMonths(5));
 
     this.updateChartData(days);
     this.chart.data.labels= this.getMonthsLabels();
     this.chart.update();
 
-    this.setYAxisMax(260);
+    this.setYAxisMax(Math.ceil((pomodorosToDo * 32) / 10) * 10);
   }
 
   private updateChartData(data: dayOnChart[]) {
@@ -106,7 +109,7 @@ export class ReportsComponent implements OnInit {
           ticks: {
             color: '#000',
             font: {
-              size: 18
+              size: 17
             }
           }
         },
@@ -116,7 +119,7 @@ export class ReportsComponent implements OnInit {
           ticks: {
             color: '#000',
             font: {
-              size: 18
+              size: 17
             }
           },
           afterFit(scale: any) {
